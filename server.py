@@ -19,7 +19,6 @@ name_list = [
     }
     ]
 
-
 @app.route('/')
 def index():
     return "Hello World"
