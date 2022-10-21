@@ -20,15 +20,6 @@ name_list = [
     ]
 
 
-def db_connection():
-    conn = None
-    try:
-        conn = sqlite3.conntect('books.sqlite')
-    except sqlite3.error as e:
-        print(e)
-    return conn
-
-
 @app.route('/')
 def index():
     return "Hello World"
