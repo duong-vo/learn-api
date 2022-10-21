@@ -24,7 +24,6 @@ name_list = [
 def index():
     return "Hello World"
 
-
 # GET/POST all of the names
 @app.route('/names', methods=['GET', 'POST'])
 def names():
