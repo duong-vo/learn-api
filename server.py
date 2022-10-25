@@ -1,29 +1,21 @@
 from flask import Flask, request, jsonify
 import json
 import pymysql
-import sqlite3
 
 app = Flask(__name__)
-
-# Hard coded name list
-name_list = [
-    {
-        "id": 0,
-        "name": "Jay",
-        "age": "19"
-    },
-    {
-        "id": 1,
-        "name": "Frank",
-        "age": "15"
-    }
-    ]
 
 def db_connection():
     conn = None
     try:
-        conn = sqlite3.connect('names.sqlite')
-    except sqlite3.error as e:
+        conn = pymysql.connect(
+            host='sql5.freesqldatabase.com',  
+            database='sql5528137',
+            user='sql5528137',
+            password='l5Fmqx2StM',
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+    except pymysql.Error as e:
         print(e)
     return conn
 
@@ -38,9 +30,9 @@ def names():
     conn = db_connection()
     cursor = conn.cursor()
     if request.method == 'GET':
-        cursor = conn.execute("SELECT * FROM name")
+        cursor.execute("SELECT * FROM name")
         names = [
-            dict(id=row[0], name=row[1], age=row[2])
+            dict(id=row['id'], name=row['name'], age=row['age'])
             for row in cursor.fetchall()
         ]
         if names is not None:
@@ -51,11 +43,11 @@ def names():
         new_name = request.form['name']
         new_age = request.form['age']
         sql = """INSERT INTO name (name, age)
-                 VALUES (?, ?)"""
+                 VALUES (%s, %s)"""
         cursor = cursor.execute(sql, (new_name, new_age))
         conn.commit()
         
-        return "name with the id: {cursor.lastrowid} created successfuly", 201
+        return f"name with the id: {cursor.lastrowid} created successfuly", 201
 
 
 # GET/PUT/DELETE single name
